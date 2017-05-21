@@ -1,0 +1,80 @@
+<pre><font color="#007f69">breed</font><font color="#000000"> [ tortugas tortuga ]
+
+</font><font color="#007f69">to</font><font color="#000000"> setup
+  </font><font color="#0000aa">reset-ticks</font><font color="#000000">
+  </font><font color="#5a5a5a">;; se crean 10 tortugas</font><font color="#000000">
+  create-tortugas </font><font color="#963700">10</font><font color="#000000">
+  </font><font color="#5a5a5a">;; cada tortuga da 10 pasos</font><font color="#000000">
+  </font><font color="#0000aa">ask</font><font color="#000000"> tortugas [ </font><font color="#0000aa">fd</font><font color="#000000"> </font><font color="#963700">10</font><font color="#000000"> ]
+  </font><font color="#5a5a5a">;; se cambia el icono de tortuga</font><font color="#000000">
+  </font><font color="#0000aa">ask</font><font color="#000000"> tortugas [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">shape</font><font color="#000000"> </font><font color="#963700">&quot;turtle&quot;</font><font color="#000000"> ]
+  </font><font color="#0000aa">tick</font><font color="#000000">
+</font><font color="#007f69">end</font><font color="#000000">
+
+</font><font color="#5a5a5a">;; funcion que crea el mundo 1</font><font color="#000000">
+</font><font color="#007f69">to</font><font color="#000000"> crear-mundo-1
+  </font><font color="#5a5a5a">;; se limpia el mundo</font><font color="#000000">
+  </font><font color="#0000aa">clear-all</font><font color="#000000">
+  </font><font color="#5a5a5a">;; de todos los patches los ubicados en el cuadrante superior izquierdo deben ser de color verde</font><font color="#000000">
+  </font><font color="#0000aa">ask</font><font color="#000000"> </font><font color="#660096">patches</font><font color="#000000">
+    [ </font><font color="#0000aa">ifelse</font><font color="#000000"> (</font><font color="#660096">pxcor</font><font color="#000000"> </font><font color="#660096">&lt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">) </font><font color="#660096">and</font><font color="#000000"> (</font><font color="#660096">pycor</font><font color="#000000"> </font><font color="#660096">&gt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">)
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">green</font><font color="#000000"> ]
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">blue</font><font color="#000000"> ]
+  ]
+</font><font color="#007f69">end</font><font color="#000000">
+
+</font><font color="#5a5a5a">;; funcion que crea el mundo 2</font><font color="#000000">
+</font><font color="#007f69">to</font><font color="#000000"> crear-mundo-2
+  </font><font color="#5a5a5a">;; se limpia el mundo</font><font color="#000000">
+  </font><font color="#0000aa">clear-all</font><font color="#000000">
+  </font><font color="#5a5a5a">;; de todos los patches los ubicados en el cuadrante superior derecho deben ser de color verde</font><font color="#000000">
+  </font><font color="#0000aa">ask</font><font color="#000000"> </font><font color="#660096">patches</font><font color="#000000">
+    [ </font><font color="#0000aa">ifelse</font><font color="#000000"> (</font><font color="#660096">pxcor</font><font color="#000000"> </font><font color="#660096">&gt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">) </font><font color="#660096">and</font><font color="#000000"> (</font><font color="#660096">pycor</font><font color="#000000"> </font><font color="#660096">&gt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">)
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">green</font><font color="#000000"> ]
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">blue</font><font color="#000000"> ]
+  ]
+</font><font color="#007f69">end</font><font color="#000000">
+
+</font><font color="#5a5a5a">;; funcion que crea el mundo 3</font><font color="#000000">
+</font><font color="#007f69">to</font><font color="#000000"> crear-mundo-3
+  </font><font color="#5a5a5a">;; se limpia el mundo</font><font color="#000000">
+  </font><font color="#0000aa">clear-all</font><font color="#000000">
+  </font><font color="#5a5a5a">;; de todos los patches los ubicados en el cuadrante inferior derecho deben ser de color verde</font><font color="#000000">
+  </font><font color="#0000aa">ask</font><font color="#000000"> </font><font color="#660096">patches</font><font color="#000000">
+    [ </font><font color="#0000aa">ifelse</font><font color="#000000"> (</font><font color="#660096">pxcor</font><font color="#000000"> </font><font color="#660096">&gt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">) </font><font color="#660096">and</font><font color="#000000"> (</font><font color="#660096">pycor</font><font color="#000000"> </font><font color="#660096">&lt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">)
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">green</font><font color="#000000"> ]
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">blue</font><font color="#000000"> ]
+  ]
+</font><font color="#007f69">end</font><font color="#000000">
+
+</font><font color="#5a5a5a">;; funcion que crea el mundo 4</font><font color="#000000">
+</font><font color="#007f69">to</font><font color="#000000"> crear-mundo-4
+  </font><font color="#5a5a5a">;; se limpia el mundo</font><font color="#000000">
+  </font><font color="#0000aa">clear-all</font><font color="#000000">
+  </font><font color="#5a5a5a">;; de todos los patches los ubicados en el cuadrante inferior izquierdo deben ser de color verde</font><font color="#000000">
+  </font><font color="#0000aa">ask</font><font color="#000000"> </font><font color="#660096">patches</font><font color="#000000">
+    [ </font><font color="#0000aa">ifelse</font><font color="#000000"> (</font><font color="#660096">pxcor</font><font color="#000000"> </font><font color="#660096">&lt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">) </font><font color="#660096">and</font><font color="#000000"> (</font><font color="#660096">pycor</font><font color="#000000"> </font><font color="#660096">&lt;=</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">)
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">green</font><font color="#000000"> ]
+      [ </font><font color="#0000aa">set</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#963700">blue</font><font color="#000000"> ]
+  ]
+</font><font color="#007f69">end</font><font color="#000000">
+
+</font><font color="#5a5a5a">;; mueve las tortugas que no estan en una zona verde</font><font color="#000000">
+</font><font color="#007f69">to</font><font color="#000000"> mover-y-comprobar
+  </font><font color="#0000aa">ask</font><font color="#000000"> tortugas
+    [ </font><font color="#0000aa">ifelse</font><font color="#000000"> </font><font color="#660096">pcolor</font><font color="#000000"> </font><font color="#660096">!=</font><font color="#000000"> </font><font color="#963700">green</font><font color="#000000">
+      [ 
+        </font><font color="#5a5a5a">;; de no estar en una zona verde se gira entre 0º y 360º</font><font color="#000000">
+        </font><font color="#0000aa">right</font><font color="#000000"> </font><font color="#660096">random</font><font color="#000000"> </font><font color="#963700">360</font><font color="#000000">
+        </font><font color="#5a5a5a">;; se dan 10 pasos</font><font color="#000000">
+        </font><font color="#0000aa">fd</font><font color="#000000"> </font><font color="#963700">10</font><font color="#000000">
+      ]
+      [ 
+        </font><font color="#5a5a5a">;; de estar en una zona verde no se da ningun paso</font><font color="#000000">
+        </font><font color="#0000aa">fd</font><font color="#000000"> </font><font color="#963700">0</font><font color="#000000">
+      ]
+    ]
+  </font><font color="#0000aa">tick</font><font color="#000000">
+</font><font color="#007f69">end</font><font color="#000000">
+</font>
+</pre>
