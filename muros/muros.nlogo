@@ -1,9 +1,11 @@
 breed [ tortugas tortuga ]
 
 to limite-1
+  ;; si se llega a una zona amarilla la tortuga muere
   if pcolor = yellow [
     die
   ]
+  ;; las tortugas no deben traspasar las zonas negras
   if pcolor = black [
     fd -1
     right random 180
@@ -11,15 +13,31 @@ to limite-1
 end
 
 to setup
-  mundo-1
-  create-tortugas 10 [ setxy -10 0 ]
+  ;; la variable global crear no se debe declarar en esta seccion,
+  ;; pues es declarada en el seleccionador de la vista ejecutar
+  ifelse crear = "Punto"
+    [ crear-en-punto ];; se crean 100 tortugas en coordenadas al azar
+    [ crear-azar];; se crean 100 tortugas en la coordenada -10, 0
+
   ask tortugas [
     fd 1
     limite-1
   ]
+  ;; se cambia el icono por defecto de las tortugas por el de una persona
+  ask tortugas [ set shape "person" ]
 end
 
-to mundo-1
+to crear-azar
+  create-tortugas 100 [ setxy (random -14 + -2) (random 15 - random 15) ]
+end
+
+to crear-en-punto
+  create-tortugas 100 [ setxy -10 0 ]
+end
+
+to mundo-general
+  ;; por defecto los bordes son negros y en el eje y con x = 0 se crean
+  ;; muros exepto en x=0 e y=0
   clear-all
   reset-ticks
   ask patches [ set pcolor white ]
@@ -27,7 +45,10 @@ to mundo-1
     if (pxcor = 0) [ set pcolor black ]
   ]
   ask patches [
-    if (pxcor = 0) and (pycor = 0) [ set pcolor white ]
+    if (pxcor = 0) and (pycor = 0) [ set pcolor green ]
+  ]
+  ask patches [
+    if (pxcor > 0) [ set pcolor green ]
   ]
   ask patches [
     if (pxcor >= 13) [ set pcolor yellow ]
@@ -46,19 +67,46 @@ to mundo-1
   ]
 end
 
-to paso
+to mundo-2
+  mundo-general
+  ;; se hace la puerta más grande
+  ask patches [
+    if (pxcor = 0 and pycor < 5 and pycor > -5) [set pcolor green]
+  ]
+  setup
+end
+
+to mundo-1
+  mundo-general
+  setup
+end
+
+to caminar
   ask tortugas [
-    fd 1
-    limite-1
+    ;; Esto permite que las tortugas no choquen entre si,
+    ;; si esta libre se avanza un paso, de los contrario se gira 180º
+    ifelse  not any? other tortugas-on patch-ahead 1
+      [ paso ]
+      [ girar ]
   ]
   tick
 end
+
+to paso
+  fd 1
+  limite-1
+end
+
+to girar
+  right random 180
+  limite-1
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-647
-448
+424
+89
+861
+527
 -1
 -1
 13.0
@@ -81,30 +129,193 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
+BUTTON
+64
+167
+150
+200
+Mundo 1
+mundo-1
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+172
+166
+258
+199
+Mundo 2
+mundo-2
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+PLOT
+63
+381
+345
+531
+Población vs tiempo
+Tiempo
+Poblacion
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"población" 1.0 0 -2674135 true "" "plot count turtles"
+
+BUTTON
+64
+269
+134
+302
+Iniciar
+caminar
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+TEXTBOX
+65
+133
+215
+151
+Mundos
+11
+0.0
+1
+
+TEXTBOX
+64
+242
+214
+260
+Inicio
+11
+0.0
+1
+
+TEXTBOX
+63
+331
+238
+359
+Grafico Población vs Tiempo
+11
+0.0
+1
+
+CHOOSER
+64
+62
+202
+107
+crear
+crear
+"Punto" "azar"
+1
+
+TEXTBOX
+63
+21
+243
+49
+Seleccion de posicion de inicio
+11
+0.0
+1
+
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+Esta aplicacion es un ejemplo para hacer un pequeños análisis de comportamiento caotico al tener una población de 100 personas las cuales deben salir de un cuarto con una puerta de diferentes tamaños. Se hace uso de restricciones de movimiento y cambio de dirección en choques.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+### limite-1 
+Es el limite del mapa, ninguna tortuga puede sobrepasar los limites de color negro y en una zona amarilla muere.
+
+### setup
+Crea las tortugas en el mundo seleccionador. Es llamada en cualquiera de las funciones mundo-1 o mundo-2.
+
+### crear-azar
+Crea las tortugas en una posición al azar en -15 < x < -2 y -15 > y > 15.
+
+### crear-en-punto
+Crea las tortugas en la posición x = -10 y = 0.
+
+### mundo-general
+Crea los bordes del mundo,y las paredes internas. Es llamado por las funciones mundo-1 y mundo-2
+
+### mundo-1
+Crea una puerta pequeña del tamaño de un patche en el mundo para que pasen las tortugas.
+
+### mundo-2
+Crea una puerta pequeña del tamaño de 4 patches en el mundo para que pasen las tortugas.
+
+### caminar
+Es la función que evalua 2 condiciones, la primera, si hay una tortuga frente a la que llama la función se llama la función girar, de lo contrario se llama la función paso.
+
+### paso
+La tortuga da un paso en la dirreción en que mira y llama la función limite-1.
+
+### girar
+La tortuga gira hacia la derecha un maximo de 180º y llama la función limite-1.
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+### Seleccionador de posición de inicio
+
+Este seleccionador posee la variable global 'crear', con la cual se elige si se desean crear tortugas con posicion al azar o en una posición especifica. 
+
+### Mundos
+
+El mundo 1 instancia el mundo-general y crea una puerta pequeña. Llama a la función mundo-1.
+
+El mundo 2 instancia el mundo-general y crea una puerta de 4 patches de espacio. Llama a la función mundo-2.
+
+### Inicio
+
+El boton iniciar permite ejecutar la simulación de forma continua.
+
+### Grafico pocisión vs tiempo
+
+Este es un grafico que se pinta durante la ejecución de la simulación, compara el tamaño de la población a lo largo del tiempo.
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+1. Compare los tiempos de salida de las tortugas entre los diferentes mundos.
+
 
 ## THINGS TO TRY
-
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+-
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+1. Cree un mundo con 2 o tres salidas y compare las respuestas.
 
 ## NETLOGO FEATURES
 
@@ -116,7 +327,9 @@ ticks
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+[ Funcion ramdom entre 2 valores] (http://netlogo-users.18673.x6.nabble.com/random-choice-general-question-td4863342.html)
+
+[ Variables globales en netlogo ] (http://netlogo-users.18673.x6.nabble.com/How-can-I-define-a-value-into-a-global-variable-td4864733.html)
 @#$#@#$#@
 default
 true
@@ -430,7 +643,7 @@ NetLogo 6.0.1
 <experiments>
   <experiment name="experiment" repetitions="1" runMetricsEveryStep="true">
     <setup>setup</setup>
-    <go>paso</go>
+    <go>caminar</go>
     <exitCondition>count tortugas = 0</exitCondition>
     <metric>count tortugas</metric>
   </experiment>
