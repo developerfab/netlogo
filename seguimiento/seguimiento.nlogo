@@ -17,7 +17,7 @@ to setup
   ask peces [
     set shape "fish"
     set color red
-    fd 1
+    fd 4
   ]
 
 end
@@ -31,13 +31,15 @@ end
 
 to peces-en-frente
   ask tortugas [
-    ;let corx = xcor
-    ;let cory = ycor
-    ask peces in-cone 3 120 [
+    let corx xcor
+    let cory ycor
+    ask peces in-cone 3 180 [
       set pcolor blue
-      setxy xcor ycor
+      set corx xcor
+      set cory ycor
     ]
-    print sum [count peces-here ] of neighbors in-cone 3 120
+    ; La tortuga se mueve en la direccion en que vio al pez
+    setxy corx cory
   ]
 end
 @#$#@#$#@
