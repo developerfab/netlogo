@@ -4,8 +4,13 @@ breed [ peces pez]
 
 to setup
   clear-all
+  ask patches[
+    set pcolor blue
+  ]
   create-tortugas 1
-  create-peces 2
+  create-peces 20 [
+    setxy (random 16) (random 16)
+  ]
 
   ;; se asigna
   ask tortugas [
@@ -17,30 +22,53 @@ to setup
   ask peces [
     set shape "fish"
     set color red
-    fd 4
+    fd 2
   ]
 
 end
 
-to peces-alrededor
-  ;; la tortuga busca alrededor de ella cuantos peces hay
+; si un pez esta en la misma posicion de la tortuga, este muere
+to pescar
+  let corx xcor
+  let cory ycor
+  ask peces [
+    if (xcor = corx) and (ycor = cory)[
+      die
+    ]
+  ]
+end
+
+to paso
+  right random 360
+  fd 1
+end
+
+to go
   ask tortugas [
-    print sum [count peces-here ] of neighbors
+    peces-en-frente
+    pescar
+    paso
+  ]
+  ask peces [
+    paso
   ]
 end
 
 to peces-en-frente
-  ask tortugas [
-    let corx xcor
-    let cory ycor
-    ask peces in-cone 3 180 [
-      set pcolor blue
-      set corx xcor
-      set cory ycor
-    ]
-    ; La tortuga se mueve en la direccion en que vio al pez
-    setxy corx cory
+  ; se asigna corx con la coordenada actual de la tortuga
+  let corx xcor
+  ; se asigna cory con la coordenada actual de la tortuga
+  let cory ycor
+  ask peces in-cone 3 130 [
+    ; si hay un pez en la zona de busqueda, se pinta el fondo de color azul
+    ; set pcolor blue
+    ; se sobre escribe el valor de las coordenadas x e y
+    set corx xcor
+    set cory ycor
   ]
+  ; La tortuga se mueve en la direccion en que vió al pez, de lo contrario
+  ; se queda en la misma posición.
+  setxy corx cory
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -75,9 +103,9 @@ BUTTON
 62
 204
 95
-peces de frente
-peces-en-frente
-NIL
+Correr
+go
+T
 1
 T
 OBSERVER
@@ -92,7 +120,7 @@ BUTTON
 121
 189
 154
-instalar
+Instalar
 setup
 NIL
 1
