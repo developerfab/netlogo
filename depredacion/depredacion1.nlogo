@@ -13,10 +13,11 @@ equipoB-own[
 
 to setup
   clear-all
+  reset-ticks
   mundo-1
   ;; se crean equipos de 5 en 5
-  create-equipoA 3
-  create-equipoB 3
+  create-equipoA numero-equipoA
+  create-equipoB numero-equipoB
 
   ask equipoA [ setxy 5 2 ]
   ask equipoB [ setxy -5 2 ]
@@ -26,18 +27,16 @@ to setup
   ask equipoB [ set shape "person" ]
 
   ;; color de distincion por equipos
-  ask equipoA [ set color [ 250 85 73]]
-  ask equipoB [ set color [ 73 146 250] ]
+  ask equipoA [ set color [ 250 85 73]]; cazador
+  ask equipoB [ set color [ 73 146 250] ]; presa
 
   ask equipoA [
     fd 1
-    pendown
     regla-general
     set follower nobody
   ]
   ask equipoB [
     fd 1
-    pendown
     regla-general
     set follower nobody
   ]
@@ -78,7 +77,6 @@ end
 
 to regla-general
   ;; ninguna persona puede cruzar los muros
-
   if pcolor = black [
     fd -1
     right random 180
@@ -97,80 +95,46 @@ to go
   ask equipoA [
     fd 1
     regla-general
-
+    regla-cazador
+    atrapar
     regla-equipo-A
   ]
   ask equipoB [
     fd 1
-    regla-cazador
-    regla-equipo-B
     regla-general
+    regla-equipo-B
   ]
+  tick
 end
 
 to regla-cazador
-  ;; creo que la cuestion no esta en quien esta a mi alrededor, sino en que vengan hacia mi
+  ;; se asignan las coordenadas actuales del cazador
+  let corx xcor
+  let cory ycor
+  ;; se busca en un rango de 3 patches y 130 grados
+  ask equipoB in-cone 3 130 [
+    set corx xcor
+    set cory ycor
+  ]
+  setxy corx cory
+end
 
-  ;;ask equipoA in-radius 2
-  ;;  [
-  ;;    let x = pxcor of equipoB
-  ;;    let a array:from-list [ xcor of myself pycor of myself]
-  ;;    print a
-  ;;  ]
-  let xd 1
-  let yd 1
-  let candidate1 one-of (equipoA-at -1 1)
-  let candidate2 one-of (equipoA-at 1 -1)
-  let candidate3 one-of (equipoA-at -1 -1)
-  let candidate4 one-of (equipoA-at 1 1)
-  ifelse candidate1 = nobody
-    [
-      ifelse candidate2 = nobody
-        [
-          ifelse candidate3 = nobody
-            [
-              if candidate4 = nobody
-                [ stop ]
-            ]
-            [
-              print "canditate 3"
-              print xcor
-              seguir
-            ]
-        ]
-        [
-          print "canditate 2"
-          ;;let c_corx xcor
-          ;;let c_cory (ycor - 1)
-          ;;fd 1
-          ;;let a
-          seguir
-        ]
+to atrapar
+  ;; si las coordenadas son las mismas se caza a la presa
+  let corx xcor
+  let cory ycor
+  ask equipoB [
+    if (xcor = corx) and (ycor = cory)[
+      die
     ]
-    [
-      print "canditate 1"
-      print xcor
-      ask candidate1 [seguir]
-   ]
-end
-
-to calculo-giro [ c_corx c_cory r_corx r_cory a_corx a_cory]
-
-
-end
-
-to seguir
-
-  rt 90
-  fd 1
-  regla-general
+  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-647
-448
+426
+53
+863
+491
 -1
 -1
 13.0
@@ -180,8 +144,8 @@ GRAPHICS-WINDOW
 1
 1
 0
-1
-1
+0
+0
 1
 -16
 16
@@ -194,10 +158,10 @@ ticks
 30.0
 
 BUTTON
-66
-58
-144
-91
+37
+57
+115
+90
 Instalar
 setup
 NIL
@@ -211,10 +175,10 @@ NIL
 1
 
 BUTTON
-87
-123
-168
-156
+148
+58
+229
+91
 caminar
 go
 T
@@ -225,6 +189,75 @@ NIL
 NIL
 NIL
 NIL
+1
+
+SLIDER
+35
+139
+256
+172
+numero-equipoA
+numero-equipoA
+1
+100
+5.0
+1
+1
+personas
+HORIZONTAL
+
+SLIDER
+35
+212
+253
+245
+numero-equipoB
+numero-equipoB
+1
+100
+20.0
+1
+1
+Personas
+HORIZONTAL
+
+PLOT
+37
+270
+376
+487
+Numero de presas Vs tiempo
+Tiempo
+Presas
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"equipoB" 1.0 0 -13791810 true "" "plot count equipoB"
+"equipoA" 1.0 0 -2674135 true "" "plot count equipoA"
+
+TEXTBOX
+37
+108
+187
+126
+Equipo A
+14
+15.0
+1
+
+TEXTBOX
+37
+182
+187
+200
+Equipo B
+14
+95.0
 1
 
 @#$#@#$#@
@@ -581,6 +614,20 @@ NetLogo 6.0.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="experiment1" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>count equipoA</metric>
+    <metric>count equipoB</metric>
+    <enumeratedValueSet variable="numero-equipoA">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="numero-equipoB">
+      <value value="20"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
