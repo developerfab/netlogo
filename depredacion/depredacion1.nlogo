@@ -13,8 +13,8 @@ equipoB-own[
 
 to setup
   clear-all
-  reset-ticks
   mundo-1
+  reset-ticks
   ;; se crean equipos de 5 en 5
   create-equipoA numero-equipoA
   create-equipoB numero-equipoB
@@ -97,11 +97,12 @@ to go
     regla-general
     regla-cazador
     atrapar
-    regla-equipo-A
+    ; regla-equipo-A
   ]
   ask equipoB [
     fd 1
     regla-general
+    alejar
     regla-equipo-B
   ]
   tick
@@ -128,6 +129,33 @@ to atrapar
       die
     ]
   ]
+end
+
+to alejar
+  ;; se asignan las coordenadas actuales de la presa
+  let corx xcor
+  let cory ycor
+  ;; si un cazador esta cerca la presa se aleja
+  ask equipoA in-cone 4 130[
+    set corx xcor
+    set cory ycor
+  ]
+  ifelse xcor = corx and ycor = cory
+  []
+  [
+    fd -1
+    right random 180
+  ]
+
+end
+
+to paradoja-puercoespin
+
+  ask turtles in-cone 1 360 [
+  ]
+end
+
+to busqueda-cazador
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -200,7 +228,7 @@ numero-equipoA
 numero-equipoA
 1
 100
-5.0
+10.0
 1
 1
 personas
