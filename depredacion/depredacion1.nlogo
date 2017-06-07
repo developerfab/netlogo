@@ -17,7 +17,7 @@ to setup
   clear-all
   mundo-1
   reset-ticks
-  ;; se crean equipos de 5 en 5
+  ;; se crean equipos
   create-equipoA numero-equipoA
   create-equipoB numero-equipoB
 
@@ -82,7 +82,7 @@ end
 to regla-general
   ;; ninguna persona puede cruzar los muros
   if pcolor = black [
-    fd -1
+    fd -2
     right random 180
   ]
 end
@@ -98,12 +98,15 @@ end
 to go
   ask equipoA [
     fd 1
+    busqueda-cazador
     regla-general
     regla-cazador
     atrapar
     ; regla-equipo-A
   ]
   ask equipoB [
+    ;; el objetivo principal es llegar a la zona azul
+    face min-one-of patches with [ pcolor = blue ] [ distance myself ]
     fd 1
     regla-general
     alejar
@@ -114,15 +117,17 @@ end
 
 to regla-cazador
   paradoja-puercoespin-equipoA
+  regla-general
   ;; se asignan las coordenadas actuales del cazador
   let corx xcor
   let cory ycor
   ;; se busca en un rango de 3 patches y 130 grados
-  ask equipoB in-cone 3 130 [
+  ask equipoB in-cone 3 360 [
     set corx xcor
     set cory ycor
   ]
   setxy corx cory
+  regla-general
 end
 
 to atrapar
@@ -142,17 +147,21 @@ to alejar
   let corx xcor
   let cory ycor
   ;; si un cazador esta cerca la presa se aleja
-  ask equipoA in-cone 4 130[
+  ask equipoA in-cone 4 360[
     set corx xcor
     set cory ycor
   ]
   ifelse xcor = corx and ycor = cory
   [
-    right random 180
-    fd 2
+    ;; si ningun cazador cerca da el paso normal
+    face min-one-of patches with [ pcolor = blue ] [ distance myself ]
+    fd 1
+    regla-general
   ]
   [
-    fd -1
+
+    face min-one-of equipoA [ distance myself ]
+    fd -2
     right random 180
   ]
 
@@ -169,13 +178,20 @@ to paradoja-puercoespin-equipoA
   [
     if soledad > 10
     [
-      setxy (corx + 2) ( cory + 2 )
-      set dolor (dolor + 1)
+      face min-one-of equipoA [ distance myself ]
+      fd -1
+      regla-general
+      set soledad (soledad - 1)
+      set dolor (dolor + 2)
     ]
+
     if dolor > 10
     [
-      setxy (corx - 2) ( cory - 2 )
-      set soledad (soledad + 1)
+      face min-one-of equipoA [ distance myself ]
+      fd -1
+      regla-general
+      set dolor (dolor - 1)
+      set dolor (soledad + 2)
     ]
   ]
 
@@ -190,27 +206,30 @@ to paradoja-puercoespin-equipoB
   ]
   if xcor < 11 and xcor > -11 and ycor < 11 and ycor > -11
   [
-    ifelse soledad > 10
+    if soledad > 10
     [
-      setxy (corx + 2) ( cory + 2 )
-      set dolor (dolor + 1)
+      face min-one-of equipoB [ distance myself ]
+      fd -1
+      regla-general
+      set soledad (soledad - 1)
+      set dolor (dolor + 2)
     ]
+
+    if dolor > 10
     [
-      set soledad (soledad + 1)
-    ]
-    ifelse dolor > 10
-    [
-      setxy (corx - 2) ( cory - 2 )
-      set soledad (soledad + 1)
-    ]
-    [
-      set dolor (dolor + 1)
+      face min-one-of equipoB [ distance myself ]
+      fd -1
+      regla-general
+      set dolor (dolor - 1)
+      set dolor (soledad + 2)
     ]
   ]
 
 end
 
 to busqueda-cazador
+  face min-one-of equipoB [ distance myself ]
+  fd 1
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -283,7 +302,7 @@ numero-equipoA
 numero-equipoA
 1
 100
-10.0
+50.0
 1
 1
 personas
@@ -298,7 +317,7 @@ numero-equipoB
 numero-equipoB
 1
 100
-41.0
+100.0
 1
 1
 Personas
@@ -387,6 +406,8 @@ http://ccl.northwestern.edu/netlogo/docs/dict/turtles-at.html
 http://ccl.northwestern.edu/netlogo/docs/dict/set.html
 
 http://ccl.northwestern.edu/netlogo/docs/dict/stop.html
+
+https://stackoverflow.com/questions/20426139/turtles-move-in-direction-of-patch-with-pcolor-x
 @#$#@#$#@
 default
 true
