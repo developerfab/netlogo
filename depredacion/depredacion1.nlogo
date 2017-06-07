@@ -4,11 +4,13 @@ breed [ equipoA participanteA ]
 breed [ equipoB participanteB ]
 
 equipoA-own[
-  follower
+  soledad
+  dolor
 ]
 
 equipoB-own[
-  follower
+  soledad
+  dolor
 ]
 
 to setup
@@ -33,12 +35,14 @@ to setup
   ask equipoA [
     fd 1
     regla-general
-    set follower nobody
+    set soledad 5
+    set dolor 5
   ]
   ask equipoB [
     fd 1
     regla-general
-    set follower nobody
+    set soledad 5
+    set dolor 5
   ]
 end
 
@@ -109,6 +113,7 @@ to go
 end
 
 to regla-cazador
+  paradoja-puercoespin-equipoA
   ;; se asignan las coordenadas actuales del cazador
   let corx xcor
   let cory ycor
@@ -132,6 +137,7 @@ to atrapar
 end
 
 to alejar
+  paradoja-puercoespin-equipoB
   ;; se asignan las coordenadas actuales de la presa
   let corx xcor
   let cory ycor
@@ -141,7 +147,10 @@ to alejar
     set cory ycor
   ]
   ifelse xcor = corx and ycor = cory
-  []
+  [
+    right random 180
+    fd 2
+  ]
   [
     fd -1
     right random 180
@@ -149,10 +158,56 @@ to alejar
 
 end
 
-to paradoja-puercoespin
-
-  ask turtles in-cone 1 360 [
+to paradoja-puercoespin-equipoA
+  let corx xcor
+  let cory ycor
+  ask equipoA in-cone 1 360 [
+    set corx xcor
+    set cory ycor
   ]
+  if xcor < 12 and xcor > -12 and ycor < 12 and ycor > -12
+  [
+    if soledad > 10
+    [
+      setxy (corx + 2) ( cory + 2 )
+      set dolor (dolor + 1)
+    ]
+    if dolor > 10
+    [
+      setxy (corx - 2) ( cory - 2 )
+      set soledad (soledad + 1)
+    ]
+  ]
+
+end
+
+to paradoja-puercoespin-equipoB
+  let corx xcor
+  let cory ycor
+  ask equipoB in-cone 4 360 [
+    set corx xcor
+    set cory ycor
+  ]
+  if xcor < 11 and xcor > -11 and ycor < 11 and ycor > -11
+  [
+    ifelse soledad > 10
+    [
+      setxy (corx + 2) ( cory + 2 )
+      set dolor (dolor + 1)
+    ]
+    [
+      set soledad (soledad + 1)
+    ]
+    ifelse dolor > 10
+    [
+      setxy (corx - 2) ( cory - 2 )
+      set soledad (soledad + 1)
+    ]
+    [
+      set dolor (dolor + 1)
+    ]
+  ]
+
 end
 
 to busqueda-cazador
@@ -243,7 +298,7 @@ numero-equipoB
 numero-equipoB
 1
 100
-20.0
+41.0
 1
 1
 Personas
