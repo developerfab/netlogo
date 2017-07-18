@@ -1,7 +1,9 @@
 breed [ equipoA participanteA ]
 breed [ equipoB participanteB ]
 
-
+;; factores biologicos iniciales(primera regla para formación de masas segun Le Bon)
+;; la soledad, el dolor y el miedo son los planteados en esta simulación con base
+;; en el dilema del puerco espin.
 equipoA-own[
   soledad
   dolor
@@ -190,18 +192,23 @@ end
 
 to go
   ask equipoA [
+    ;; se da el paso
     paso
-    regla-general
+    ;; regla-general
+    ;; se busca alguna presa en general
     busqueda-cazador
-    regla-general
+    ;; se busca alguna presa que este cerca
     regla-cazador
+    ;; se atrapa de ser necesario
     atrapar
     regla-equipo-A
   ]
   ask equipoB [
-    ;; el objetivo principal es llegar a la zona azul
+    ;; el objetivo principal es llegar a la zona azul, se mira en dirección de dicha zona
     face min-one-of patches with [ pcolor = blue ] [ distance myself ]
+    ;; se da un paso en esa dirección
     paso
+    ;; se comprueba que no se este cruzando un muro
     regla-general
 
     alejar
@@ -213,7 +220,7 @@ to go
 end
 
 to regla-cazador
-  paradoja-puercoespin-equipoA
+  dilema-puercoespin-equipoA
   regla-general
   ;; se asignan las coordenadas actuales del cazador
   let corx xcor
@@ -226,6 +233,7 @@ to regla-cazador
   ]
   ;; se asignan las nuevas coordenadas de movimiento
   setxy corx cory
+  ;; se comprueba que no se este cruzando un muro
   regla-general
 end
 
@@ -242,7 +250,7 @@ to atrapar
 end
 
 to alejar
-  paradoja-puercoespin-equipoB
+  dilema-puercoespin-equipoB
   ;; si tiene miedo se aleja de los cazadores
   alejar-por-miedo
   ;; se asignan las coordenadas actuales de la presa
@@ -291,7 +299,7 @@ to alejar-por-miedo
   ]
 end
 
-to paradoja-puercoespin-equipoA
+to dilema-puercoespin-equipoA
   ;; se asignan las coordenadas actuales del individuo
   let corx xcor
   let cory ycor
@@ -304,15 +312,25 @@ to paradoja-puercoespin-equipoA
   ;; se comprueba que las coordenadas esten dentro de la zona del mundo
   if xcor < 12 and xcor > -12 and ycor < 12 and ycor > -12
   [
+    ;; se comprueba si hay alguien cerca
+    ifelse corx != xcor or cory != ycor
+    [
+      ;; de ser asi se aumenta el dolor en 2
+      set dolor (dolor + 2)
+    ]
+    [
+      ;; de no ser asi se aumenta la soledad en 2
+      set soledad (soledad + 2)
+    ]
     if soledad > 10
     [
       face min-one-of equipoA [ distance myself ]
       fd 1
-      if one-of equipoA in-cone 1 360
-      [
+      ;;if one-of equipoA in-cone 1 360
+      ;;[
         set soledad (soledad - 1)
         set dolor (dolor + 2)
-      ]
+      ;;]
       regla-general
 
     ]
@@ -330,7 +348,7 @@ to paradoja-puercoespin-equipoA
 
 end
 
-to paradoja-puercoespin-equipoB
+to dilema-puercoespin-equipoB
   let corx xcor
   let cory ycor
   ask equipoB in-cone 4 130 [
@@ -339,15 +357,25 @@ to paradoja-puercoespin-equipoB
   ]
   if xcor < 11 and xcor > -11 and ycor < 11 and ycor > -11
   [
+    ;; se comprueba si hay alguien cerca
+    ifelse corx != xcor or cory != ycor
+    [
+      ;; de ser asi se aumenta el dolor en 2
+      set dolor (dolor + 2)
+    ]
+    [
+      ;; de no ser asi se aumenta la soledad en 2
+      set soledad (soledad + 2)
+    ]
     if soledad > 10
     [
       face min-one-of equipoB [ distance myself ]
       fd 1
-      if one-of equipoA in-cone 1 360
-      [
+      ;;if one-of equipoA in-cone 1 360
+      ;;[
         set soledad (soledad - 1)
         set dolor (dolor + 2)
-      ]
+      ;;]
       regla-general
 
     ]
@@ -366,11 +394,16 @@ to paradoja-puercoespin-equipoB
 end
 
 to busqueda-cazador
+  ;; se busca algun miembro del equipo contrario
   if any? equipoB
   [
+    ;; si se encuentra, se mira en esa dirección
     face min-one-of equipoB [ distance myself ]
+    ;; se da un paso en su dirección
     fd 1
   ]
+  ;; se comprueba que no se este cruzando un muro
+  regla-general
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -458,7 +491,7 @@ numero-equipoB
 numero-equipoB
 1
 100
-11.0
+50.0
 1
 1
 Personas
@@ -601,6 +634,7 @@ http://ccl.northwestern.edu/netlogo/docs/dict/set.html
 http://ccl.northwestern.edu/netlogo/docs/dict/stop.html
 
 https://stackoverflow.com/questions/20426139/turtles-move-in-direction-of-patch-with-pcolor-x
+http://ccl.northwestern.edu/netlogo/docs/dict/Symbols.html
 @#$#@#$#@
 default
 true
