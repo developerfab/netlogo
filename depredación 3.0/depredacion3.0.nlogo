@@ -16,7 +16,7 @@ equipoB-own[
 ]
 
 globals [
-  asesinado
+  atrapado
   aSalvo
 ]
 
@@ -24,7 +24,7 @@ to setup
   clear-all
   mundo-2
   ;; se inician las variables globales en 0
-  set asesinado 0
+  set atrapado 0
   set aSalvo 0
 
   reset-ticks
@@ -220,7 +220,7 @@ to go
 end
 
 to regla-cazador
-  dilema-puercoespin-equipoA
+  ;; dilema-puercoespin-equipoA
   regla-general
   ;; se asignan las coordenadas actuales del cazador
   let corx xcor
@@ -243,14 +243,14 @@ to atrapar
   let cory ycor
   ask equipoB [
     if (xcor = corx) and (ycor = cory)[
-      set asesinado (asesinado + 1)
+      set atrapado (atrapado + 1)
       die
     ]
   ]
 end
 
 to alejar
-  dilema-puercoespin-equipoB
+  ;; dilema-puercoespin-equipoB
   ;; si tiene miedo se aleja de los cazadores
   alejar-por-miedo
   ;; se asignan las coordenadas actuales de la presa
@@ -267,6 +267,10 @@ to alejar
   [
     ;; si ningun cazador cerca da el paso normal
     face min-one-of patches with [ pcolor = blue ] [ distance myself ]
+    ;; como no hay ningun cazador cerca se calma
+    if miedo > 1 [
+      set miedo (miedo - 1)
+    ]
     fd 1
     regla-general
   ]
@@ -476,7 +480,7 @@ numero-equipoA
 numero-equipoA
 1
 100
-100.0
+2.0
 1
 1
 personas
@@ -491,7 +495,7 @@ numero-equipoB
 numero-equipoB
 1
 100
-50.0
+3.0
 1
 1
 Personas
@@ -553,15 +557,15 @@ true
 "" ""
 PENS
 "A salvo" 1.0 0 -13791810 true "" "plot aSalvo"
-"Asesinados" 1.0 0 -2674135 true "" "plot asesinado"
+"Atrapados" 1.0 0 -2674135 true "" "plot atrapado"
 
 MONITOR
 948
 348
 1068
 393
-Asesinados
-asesinado
+Atrapado
+atrapado
 17
 1
 11
@@ -946,17 +950,18 @@ NetLogo 6.0.1
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="experiment1" repetitions="1" runMetricsEveryStep="true">
+  <experiment name="experiment1" repetitions="10" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <exitCondition>count equipoB = 0</exitCondition>
-    <metric>asesinado</metric>
+    <metric>atrapado</metric>
     <metric>Asalvo</metric>
+    <metric>ticks</metric>
     <enumeratedValueSet variable="numero-equipoA">
-      <value value="30"/>
+      <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="numero-equipoB">
-      <value value="20"/>
+      <value value="2"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
