@@ -1,3 +1,5 @@
+extensions [array]
+
 breed [ equipoA participanteA ]
 breed [ equipoB participanteB ]
 
@@ -18,6 +20,7 @@ equipoB-own[
 globals [
   atrapado
   aSalvo
+  tiempoCaza
 ]
 
 to setup
@@ -57,6 +60,7 @@ to setup
     ;; por defecto las presas tienen miedo de los cazadores
     set miedo 5
   ]
+  set tiempoCaza array:from-list n-values numero-equipoB [0]
 end
 
 to mundo-1
@@ -155,6 +159,7 @@ to regla-general
     fd 1
     ; gira para cualquier dirección en el ángulo de visión
     right random 130
+
   ]
 end
 
@@ -210,10 +215,7 @@ to go
     paso
     ;; se comprueba que no se este cruzando un muro
     regla-general
-
     alejar
-    ;set miedo (miedo - 1)
-
     regla-equipo-B
   ]
   tick
@@ -243,6 +245,12 @@ to atrapar
   let cory ycor
   ask equipoB [
     if (xcor = corx) and (ycor = cory)[
+      ;; se registra el tick en el que es atrapada la presa
+      ifelse (count equipoB != 0)[
+        array:set tiempoCaza (numero-equipoB - count equipoB) (ticks)
+      ][
+        array:set tiempoCaza (numero-equipoB - 1) (ticks)
+      ]
       set atrapado (atrapado + 1)
       die
     ]
@@ -291,6 +299,8 @@ to alejar-por-miedo
     face min-one-of equipoA [ distance myself ]
     ;; se retroceden 2 pasos
     fd -2
+    regla-general
+    regla-general
     ;; se disminuye el miedo en 1
     set miedo ( miedo - 1)
   ]
@@ -480,7 +490,7 @@ numero-equipoA
 numero-equipoA
 1
 100
-2.0
+100.0
 1
 1
 personas
@@ -495,7 +505,7 @@ numero-equipoB
 numero-equipoB
 1
 100
-3.0
+100.0
 1
 1
 Personas
@@ -506,7 +516,7 @@ PLOT
 270
 376
 487
-Numero de presas Vs tiempo
+Numero de presas Vs Ticks
 Tiempo
 Presas
 0.0
@@ -518,7 +528,6 @@ true
 "" ""
 PENS
 "equipoB" 1.0 0 -13791810 true "" "plot count equipoB"
-"equipoA" 1.0 0 -2674135 true "" "plot count equipoA"
 
 TEXTBOX
 37
@@ -558,6 +567,7 @@ true
 PENS
 "A salvo" 1.0 0 -13791810 true "" "plot aSalvo"
 "Atrapados" 1.0 0 -2674135 true "" "plot atrapado"
+"Disponibles" 1.0 0 -10899396 true "" "plot count equipoB"
 
 MONITOR
 948
