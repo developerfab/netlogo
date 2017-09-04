@@ -490,7 +490,7 @@ numero-equipoA
 numero-equipoA
 1
 100
-100.0
+3.0
 1
 1
 personas
@@ -505,7 +505,7 @@ numero-equipoB
 numero-equipoB
 1
 100
-100.0
+2.0
 1
 1
 Personas
@@ -520,14 +520,14 @@ Numero de presas Vs Ticks
 Tiempo
 Presas
 0.0
-10.0
+5.0
 0.0
 10.0
 true
 true
 "" ""
 PENS
-"equipoB" 1.0 0 -13791810 true "" "plot count equipoB"
+"equipoB" 1.0 2 -13791810 true "" "plot count equipoB"
 
 TEXTBOX
 37
